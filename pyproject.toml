@@ -1,0 +1,13 @@
+[project]
+name = "msid-projekt"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "notebook>=7.5.6",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "scikit-fuzzy>=0.5.0",
+    "scikit-learn>=1.8.0",
+]
