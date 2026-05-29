@@ -3,6 +3,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
 
+from utils import print_metrics
+
 
 def scale_data(data: DiabetesData):
     scaler = StandardScaler()
@@ -18,10 +20,7 @@ def run_logistic_regression(data: DiabetesData):
 
     y_pred = model.predict(scaled_data.x_test)
     print("Logistic regression")
-    print("Accuracy:", "%.6f" % accuracy_score(scaled_data.y_test, y_pred))
-    print("Precision:", "%.6f" % precision_score(scaled_data.y_test, y_pred))
-    print("Recall:", "%.6f" % recall_score(scaled_data.y_test, y_pred))
-    print("F1 Score:", "%.6f" % f1_score(scaled_data.y_test, y_pred))
+    print_metrics(data.y_test, y_pred)
 
 if __name__ == '__main__':
     data = get_raw_data()
