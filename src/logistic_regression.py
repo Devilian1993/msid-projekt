@@ -1,4 +1,4 @@
-from src.data_prep import DiabetesData, get_raw_data
+from src.data_prep import DiabetesData, get_raw_data, clean_df_null
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
@@ -23,5 +23,5 @@ def run_logistic_regression(data: DiabetesData):
     print_metrics(data.y_test, y_pred)
 
 if __name__ == '__main__':
-    data = get_raw_data()
+    data = clean_df_null(get_raw_data())
     run_logistic_regression(data)

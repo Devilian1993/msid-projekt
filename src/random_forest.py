@@ -1,4 +1,4 @@
-from src.data_prep import DiabetesData, get_raw_data
+from src.data_prep import DiabetesData, get_raw_data, clean_df_null
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
 
@@ -15,5 +15,5 @@ def run_random_forest(data: DiabetesData):
 
 
 if __name__ == '__main__':
-    data = get_raw_data()
+    data = clean_df_null(get_raw_data())
     run_random_forest(data)

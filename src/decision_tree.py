@@ -1,4 +1,4 @@
-from src.data_prep import DiabetesData, get_raw_data
+from src.data_prep import DiabetesData, get_raw_data, clean_df_null
 
 import sklearn
 
@@ -14,5 +14,5 @@ def run_decision_tree(data: DiabetesData):
     print_metrics(data.y_test, y_pred)
 
 if __name__ == '__main__':
-    data: DiabetesData = get_raw_data()
+    data: DiabetesData = clean_df_null(get_raw_data())
     run_decision_tree(data)
