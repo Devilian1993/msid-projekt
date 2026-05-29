@@ -76,3 +76,7 @@ if __name__ == "__main__":
     # df_fill_median.x_train.info()
     # print(df_fill_median.x_test.Insulin.describe())
 
+    print(df_raw.corr())
+    # correlation matrix - might take into consideration during defining fuzzy logic inputs
+    # highest correlation with the outcome for glucose and bmi, later age, pregnancies, skin thickness and insulin
+
