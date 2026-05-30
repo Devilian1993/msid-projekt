@@ -4,15 +4,15 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 from data_prep import clean_df_null, get_raw_data
-from collections import namedtuple
+from utils import print_metrics
 
 
 def setup_rules():
-    glucose = ctrl.Antecedent(np.linspace(30, 270, 500), 'glucose') # above 300 can be fatal,
-    bmi = ctrl.Antecedent(np.linspace(15, 70, 500), 'bmi') # not sure about the ranges
-    age = ctrl.Antecedent(np.linspace(1, 100, 100), 'age') # may cover more variables later on
+    glucose = ctrl.Antecedent(np.linspace(30, 270, 500), 'glucose')  # above 300 can be fatal,
+    bmi = ctrl.Antecedent(np.linspace(15, 70, 500), 'bmi')  # not sure about the ranges
+    age = ctrl.Antecedent(np.linspace(1, 100, 100), 'age')  # may cover more variables later on
     diabetes = ctrl.Consequent(np.linspace(0, 100, 200), 'diabetes',
-                                       defuzzify_method='centroid')
+                               defuzzify_method='centroid')
 
     # inputs
     glucose['low'] = fuzz.trapmf(glucose.universe, [0.0, 0.0, 65.0, 90.0])
@@ -21,7 +21,7 @@ def setup_rules():
     glucose['alarming'] = fuzz.trapmf(glucose.universe, [165.0, 190.0, 270.0, 270.0])
 
     bmi['underweight'] = fuzz.trapmf(bmi.universe, [0.0, 0.0, 17.0, 20.0])
-    bmi['normal'] = fuzz.trimf(bmi.universe, [18.5, 23.0, 27.5]) # as in normal weight
+    bmi['normal'] = fuzz.trimf(bmi.universe, [18.5, 23.0, 27.5])  # as in normal weight
     bmi['overweight'] = fuzz.trimf(bmi.universe, [26.0, 31.0, 36.0])
     bmi['obese'] = fuzz.trapmf(bmi.universe, [34.0, 45.0, 70.0, 70.0])
 
@@ -52,7 +52,7 @@ def setup_rules():
 
         ctrl.Rule(glucose['alarming'], diabetes['high']),
         ctrl.Rule(glucose['alarming'] & age['young'], diabetes['medium']),
-        ctrl.Rule(glucose['alarming'] & bmi['obese'],  diabetes['certain']),
+        ctrl.Rule(glucose['alarming'] & bmi['obese'], diabetes['certain']),
         ctrl.Rule(glucose['alarming'] & bmi['overweight'] & age['elderly'], diabetes['certain']),
 
         ctrl.Rule(bmi['obese'] & age['elderly'] & glucose['medium'], diabetes['high']),
@@ -69,6 +69,8 @@ if __name__ == '__main__':
     data = clean_df_null(get_raw_data())
 
     predictions = []
+    predictions_round = []
+
     for index, row in data.x_train.iterrows():
         diabetes_system.input['glucose'] = row['Glucose']
         diabetes_system.input['bmi'] = row['BMI']
@@ -76,7 +78,9 @@ if __name__ == '__main__':
 
         diabetes_system.compute()
 
-        predictions.append(diabetes_system.output['diabetes'])
+        # to compare with other methods using metrics we have to round the results to 0 or 1
+        predictions.append(diabetes_system.output['diabetes'])  # prediction contains percentages
+        predictions_round.append(0 if diabetes_system.output['diabetes'] < 55.0 else 1)  # rounded values (0 or 1)
     # print(predictions)
 
     comparison_df = pandas.DataFrame({
@@ -87,5 +91,4 @@ if __name__ == '__main__':
     print(comparison_df.head(100))
     # rules could still use some refinement!
 
-
-
+    print_metrics(data.y_train, predictions_round)
