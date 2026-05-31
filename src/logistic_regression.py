@@ -15,9 +15,7 @@ def run_logistic_regression(data: DiabetesData):
             max_iter=1000,
             random_state=42,
             class_weight='balanced',
-            solver='saga',
-            C=0.1,
-            l1_ratio=0.5,
+            C=1,
         ))
     ])
 
