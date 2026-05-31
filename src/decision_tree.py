@@ -12,10 +12,10 @@ def run_decision_tree(data: DiabetesData):
         random_state=42,
         class_weight='balanced',
         max_depth=5,
-        min_samples_split=8,
+        min_samples_split=9,
         min_samples_leaf=2,
-        criterion='gini',
-        ccp_alpha=0.0,
+        criterion='entropy',
+        splitter='random',
     )
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
