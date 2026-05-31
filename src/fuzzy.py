@@ -1,7 +1,8 @@
 import numpy as np
-import pandas
 import skfuzzy as fuzz
+import sklearn
 from skfuzzy import control as ctrl
+from sklearn.model_selection import StratifiedKFold
 
 from data_prep import clean_df_null, get_raw_data
 from utils import print_metrics
@@ -65,30 +66,24 @@ def setup_rules():
 
 if __name__ == '__main__':
     diabetes_system = setup_rules()
-
     data = clean_df_null(get_raw_data())
 
-    predictions = []
-    predictions_round = []
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    f1_scores = []
 
-    for index, row in data.x_train.iterrows():
-        diabetes_system.input['glucose'] = row['Glucose']
-        diabetes_system.input['bmi'] = row['BMI']
-        diabetes_system.input['age'] = row['Age']
+    for train_idx, test_idx in cv.split(data.x, data.y):
+        x_fold = data.x.iloc[test_idx]
+        y_fold = data.y.iloc[test_idx]
 
-        diabetes_system.compute()
+        predictions_round = []
+        for index, row in x_fold.iterrows():
+            diabetes_system.input['glucose'] = row['Glucose']
+            diabetes_system.input['bmi'] = row['BMI']
+            diabetes_system.input['age'] = row['Age']
+            diabetes_system.compute()
+            predictions_round.append(0 if diabetes_system.output['diabetes'] < 55.0 else 1)
 
-        # to compare with other methods using metrics we have to round the results to 0 or 1
-        predictions.append(diabetes_system.output['diabetes'])  # prediction contains percentages
-        predictions_round.append(0 if diabetes_system.output['diabetes'] < 55.0 else 1)  # rounded values (0 or 1)
-    # print(predictions)
+        f1_scores.append(sklearn.metrics.f1_score(y_fold, predictions_round))
 
-    comparison_df = pandas.DataFrame({
-        'Actual outcome': data.y_train,
-        'Predicted outcome': predictions
-    })
-    # print(data.x_train.head(100))
-    print(comparison_df.head(100))
-    # rules could still use some refinement!
-
-    print_metrics(data.y_train, predictions_round)
+    print("Fuzzy")
+    print_metrics(np.array(f1_scores))

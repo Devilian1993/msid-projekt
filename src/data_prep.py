@@ -1,17 +1,11 @@
 import numpy as np
 import pandas as pd
 from typing import NamedTuple, cast
-import sklearn
-from sklearn import metrics
-from sklearn.model_selection import train_test_split
 
 
 class DiabetesData(NamedTuple):
-    x_train: pd.DataFrame
-    x_test: pd.DataFrame
-    y_train: pd.Series
-    y_test: pd.Series
-
+    x: pd.DataFrame
+    y: pd.Series
 
 # this one is the raw data frame with null values present
 def get_raw_data():
@@ -47,9 +41,7 @@ def split_data(df):
     x = df.drop("Outcome", axis=1)
     y = df["Outcome"]
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42, stratify=y)
-
-    return DiabetesData(x_train, x_test, y_train, y_test)
+    return DiabetesData(x, y)
 
 
 if __name__ == "__main__":
@@ -62,17 +54,17 @@ if __name__ == "__main__":
     # 3 different samples (null values, no null values, null converted to median values) to run tests on
 
     print("df_with_null:")
-    print(df_with_null.x_train.shape) # this one might not work with logistic regression
+    print(df_with_null.x.shape) # this one might not work with logistic regression
     # df_with_null.x_train.info()
     # print(df_with_null.x_test.Insulin.describe()) # insulin contains the most missing values
 
     print("df_no_null:")
-    print(df_no_null.x_train.shape) # subset is smaller, DiabetesData test data will differ!
+    print(df_no_null.x.shape) # subset is smaller, DiabetesData test data will differ!
     # df_no_null.x_train.info()
     # print(df_no_null.x_test.Insulin.describe())
 
     print("df_fill_median:")
-    print(df_fill_median.x_train.shape)
+    print(df_fill_median.x.shape)
     # df_fill_median.x_train.info()
     # print(df_fill_median.x_test.Insulin.describe())
 

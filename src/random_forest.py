@@ -1,17 +1,28 @@
+from sklearn.model_selection import GridSearchCV
+
 from src.data_prep import DiabetesData, get_raw_data, clean_df_null
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
 
 from utils import print_metrics
 
 
 def run_random_forest(data: DiabetesData):
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(data.x_train, data.y_train)
+    from sklearn.model_selection import cross_val_score, StratifiedKFold
 
-    y_pred = model.predict(data.x_test)
-    print("Random forest")
-    print_metrics(data.y_test, y_pred)
+    model = RandomForestClassifier(
+        random_state=42,
+        class_weight='balanced',
+        n_estimators=100,
+        max_depth=5,
+        min_samples_leaf=4,
+        max_features='log2',
+    )
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    scores = cross_val_score(estimator=model, X=data.x, y=data.y, cv=cv, scoring='f1', n_jobs=-1)
+
+    print("Random Forest")
+    print_metrics(scores)
 
 
 if __name__ == '__main__':

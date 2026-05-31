@@ -1,26 +1,31 @@
 from src.data_prep import DiabetesData, get_raw_data, clean_df_null
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
 
-from utils import print_metrics
+from src.utils import print_metrics
 
-
-def scale_data(data: DiabetesData):
-    scaler = StandardScaler()
-    x_train_scaled = scaler.fit_transform(data.x_train)
-    x_test_scaled = scaler.transform(data.x_test)
-
-    return DiabetesData(x_train_scaled, x_test_scaled, data.y_train, data.y_test)
 
 def run_logistic_regression(data: DiabetesData):
-    scaled_data = scale_data(data)
-    model = LogisticRegression(max_iter=1000, random_state=42)
-    model.fit(scaled_data.x_train, scaled_data.y_train)
+    from sklearn.model_selection import cross_val_score, StratifiedKFold
+    from sklearn.pipeline import Pipeline
 
-    y_pred = model.predict(scaled_data.x_test)
-    print("Logistic regression")
-    print_metrics(data.y_test, y_pred)
+    model = Pipeline([
+        ('scaler', StandardScaler()),
+        ('model', LogisticRegression(
+            max_iter=1000,
+            random_state=42,
+            class_weight='balanced',
+            solver='saga',
+            C=0.1,
+            l1_ratio=0.5,
+        ))
+    ])
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    scores = cross_val_score(estimator=model, X=data.x, y=data.y, cv=cv, scoring='f1', n_jobs=-1)
+
+    print("Logistic Regression")
+    print_metrics(scores)
 
 if __name__ == '__main__':
     data = clean_df_null(get_raw_data())
