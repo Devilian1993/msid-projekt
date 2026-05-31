@@ -69,7 +69,14 @@ if __name__ == '__main__':
     data = clean_df_null(get_raw_data())
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    f1_scores = []
+    test_f1 = []
+    test_accuracy = []
+    test_precision = []
+    test_recall = []
+    scores = {'test_f1': [],
+              'test_accuracy': [],
+              'test_precision': [],
+              'test_recall': []}
 
     for train_idx, test_idx in cv.split(data.x, data.y):
         x_fold = data.x.iloc[test_idx]
@@ -83,7 +90,10 @@ if __name__ == '__main__':
             diabetes_system.compute()
             predictions_round.append(0 if diabetes_system.output['diabetes'] < 55.0 else 1)
 
-        f1_scores.append(sklearn.metrics.f1_score(y_fold, predictions_round))
+        scores['test_f1'].append(sklearn.metrics.f1_score(y_fold, predictions_round))
+        scores['test_accuracy'].append(sklearn.metrics.accuracy_score(y_fold, predictions_round))
+        scores['test_precision'].append(sklearn.metrics.precision_score(y_fold, predictions_round))
+        scores['test_recall'].append(sklearn.metrics.recall_score(y_fold, predictions_round))
 
     print("Fuzzy")
-    print_metrics(np.array(f1_scores))
+    print_metrics(scores)

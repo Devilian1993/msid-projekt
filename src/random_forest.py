@@ -7,7 +7,7 @@ from utils import print_metrics
 
 
 def run_random_forest(data: DiabetesData):
-    from sklearn.model_selection import cross_val_score, StratifiedKFold
+    from sklearn.model_selection import cross_validate, StratifiedKFold
 
     model = RandomForestClassifier(
         random_state=42,
@@ -19,7 +19,12 @@ def run_random_forest(data: DiabetesData):
     )
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    scores = cross_val_score(estimator=model, X=data.x, y=data.y, cv=cv, scoring='f1', n_jobs=-1)
+    scores = cross_validate(estimator=model, X=data.x, y=data.y, cv=cv, scoring={
+        'accuracy' : 'accuracy',
+        'recall' : 'recall',
+        'precision' : 'precision',
+        'f1' : 'f1',
+    }, n_jobs=-1)
 
     print("Random Forest")
     print_metrics(scores)
