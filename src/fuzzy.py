@@ -4,7 +4,7 @@ import sklearn
 from skfuzzy import control as ctrl
 from sklearn.model_selection import StratifiedKFold
 
-from data_prep import clean_df_null, get_raw_data
+from data_prep import clean_df_null, get_raw_data, DiabetesData
 from utils import print_metrics
 
 
@@ -63,10 +63,8 @@ def setup_rules():
     diabetes_ctrl = ctrl.ControlSystem(rules)
     return ctrl.ControlSystemSimulation(diabetes_ctrl)
 
-
-if __name__ == '__main__':
+def run_fuzzy_logic(data: DiabetesData):
     diabetes_system = setup_rules()
-    data = clean_df_null(get_raw_data())
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     test_f1 = []
@@ -97,3 +95,8 @@ if __name__ == '__main__':
 
     print("Fuzzy")
     print_metrics(scores)
+
+if __name__ == '__main__':
+    data = clean_df_null(get_raw_data())
+
+    run_fuzzy_logic(data)
