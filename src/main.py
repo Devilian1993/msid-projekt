@@ -9,9 +9,9 @@ from data_prep import DiabetesData, get_raw_data, clean_df_null, clean_df_median
 df_raw = get_raw_data()
 
 # 3 datasets - raw data (some missing values), clean data (no missing values), median data (missing filled with median)
-nulls_data = split_data(df_raw)
-clean_data = clean_df_null(df_raw)
-median_data = clean_df_median(df_raw)
+nulls_data = split_data(df_raw.copy())
+clean_data = clean_df_null(df_raw.copy())
+median_data = clean_df_median(df_raw.copy())
 
 # testing for following:
 # accuracy - chance of correct result (true positives + true negatives) / all
@@ -54,7 +54,7 @@ print("Testing finished!")
 # 3. testing the median dataset
 print("Testing the median dataset!\n")
 fuzzy.run_fuzzy_logic(median_data)
-# logistic_regression.run_logistic_regression(median_data) # something goes wrong
+logistic_regression.run_logistic_regression(median_data) # something goes wrong
 decision_tree.run_decision_tree(median_data)
 random_forest.run_random_forest(median_data)
 print("Testing finished!")

@@ -32,7 +32,8 @@ def clean_df_null(df):
 # this one leaves the median in place of null values
 def clean_df_median(df):
     # replace 0 in every column (excl. pregnancies and outcome) with median
-    df[1:-1] = df[1:-1].fillna(df[1:-1].median())
+    cols_to_fix = df.columns[1:-1]
+    df[cols_to_fix] = df[cols_to_fix].fillna(df[cols_to_fix].median())
 
     return split_data(df)
 
@@ -48,9 +49,9 @@ if __name__ == "__main__":
     df_raw = get_raw_data()
     # df_raw.info() # overall info for base raw data frame
 
-    df_with_null = split_data(df_raw) # subset of raw data that swaps 0 to nulls
-    df_no_null = clean_df_null(df_raw) # subset of raw data that drops rows with missing values
-    df_fill_median = clean_df_median(df_raw) # subset of raw data that swaps nulls to median of given column
+    df_with_null = split_data(df_raw.copy()) # subset of raw data that swaps 0 to nulls
+    df_no_null = clean_df_null(df_raw.copy()) # subset of raw data that drops rows with missing values
+    df_fill_median = clean_df_median(df_raw.copy()) # subset of raw data that swaps nulls to median of given column
     # 3 different samples (null values, no null values, null converted to median values) to run tests on
 
     print("df_with_null:")
