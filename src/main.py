@@ -54,7 +54,7 @@ print("Testing finished!")
 # 3. testing the median dataset
 print("Testing the median dataset!\n")
 fuzzy.run_fuzzy_logic(median_data)
-logistic_regression.run_logistic_regression(median_data) # something goes wrong
+logistic_regression.run_logistic_regression(median_data)
 decision_tree.run_decision_tree(median_data)
 random_forest.run_random_forest(median_data)
 print("Testing finished!")
