@@ -16,7 +16,7 @@ print(df_raw.describe())
 print("Correlation matrix:")
 print(df_raw.corr())
 # Worth mentioning is the correlation matrix - we have taken the variables most correlated to the diabetes outcome as our attributes
-# we have extracted 4 attributes most ( > 0.2 ) correlated to outcome - glucose, bmi, age, insulin
+# we have extracted 3 attributes most ( > 0.2 ) correlated to outcome - glucose, bmi, age
 # highest correlation with the outcome for glucose and bmi, later age, pregnancies, skin thickness and insulin
 
 # 3 datasets - raw data (some missing values), clean data (no missing values), median data (missing filled with median)
