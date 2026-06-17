@@ -7,11 +7,37 @@ import random_forest
 from data_prep import DiabetesData, get_raw_data, clean_df_null, clean_df_median, split_data
 
 df_raw = get_raw_data()
+print("Raw dataframe from csv file:")
+print(df_raw.describe())
+# 768 rows read from csv file, with mean age of ~33 and little over 1/3 having diabetes
+# source: https://www.kaggle.com/datasets/mathchi/diabetes-data-set
+# What might be worth noting from the source - all patients are female and at least 21 years old of Pima Indian heritage
+
+print("Correlation matrix:")
+print(df_raw.corr())
+# Worth mentioning is the correlation matrix - we have taken the variables most correlated to the diabetes outcome as our attributes
+# we have extracted 4 attributes most ( > 0.2 ) correlated to outcome - glucose, bmi, age, insulin
+# highest correlation with the outcome for glucose and bmi, later age, pregnancies, skin thickness and insulin
 
 # 3 datasets - raw data (some missing values), clean data (no missing values), median data (missing filled with median)
 nulls_data = split_data(df_raw.copy())
+print("\nSplit raw dataframe, containing null values:")
+print(nulls_data.x.describe()) # does not differ from df_raw at all - we just dropped the outcome column
+print(nulls_data.y.describe()) # as before little over 1/3 (0.348958) of records are diagnosed with diabetes
+print(nulls_data.x.shape)
+
 clean_data = clean_df_null(df_raw.copy())
+print("\nClean dataframe, dropping all rows with null values:")
+print(clean_data.x.describe()) # this one is much different - only 392 rows left, which is still a statistically viable sample
+print(clean_data.y.describe()) # also the share of diabetes patients is smaller (by a very small margin, 0.331633 here)
+print(clean_data.x.shape)
+
 median_data = clean_df_median(df_raw.copy())
+print("\nModified dataframe, swapping all null values for median values for given column:")
+print(median_data.x.describe()) # Description is really similar to nulls_data as the filled-in median values do not affect the overall statistics that much
+print(median_data.y.describe())
+print(median_data.x.shape)
+
 
 # testing for following:
 # accuracy - chance of correct result (true positives + true negatives) / all
