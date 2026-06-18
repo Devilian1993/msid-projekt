@@ -29,7 +29,7 @@ def run_random_forest(data: DiabetesData):
     print("Random Forest")
     print_metrics(scores)
 
-def run_random_forest_gridsearch(data: DiabetesData):
+def run_random_forest_gridsearch(data: DiabetesData, refit: str = 'f1'):
     from sklearn.model_selection import GridSearchCV, StratifiedKFold
     from sklearn.ensemble import RandomForestClassifier
 
@@ -58,7 +58,7 @@ def run_random_forest_gridsearch(data: DiabetesData):
         param_grid=param_grid,
         cv=cv,
         scoring=scoring,
-        refit='f1',
+        refit=refit,
         n_jobs=-1
     )
 
@@ -80,4 +80,5 @@ def run_random_forest_gridsearch(data: DiabetesData):
 if __name__ == '__main__':
     data = clean_df_null(get_raw_data())
     # run_random_forest_gridsearch(data)
+    # run_random_forest_gridsearch(data, 'recall')
     run_random_forest(data)

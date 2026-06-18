@@ -30,7 +30,7 @@ def run_decision_tree(data: DiabetesData):
     print_metrics(scores)
 
 
-def run_decision_tree_gridsearch(data: DiabetesData):
+def run_decision_tree_gridsearch(data: DiabetesData, refit: str = 'f1'):
     from sklearn.tree import DecisionTreeClassifier
 
     base_model = DecisionTreeClassifier(
@@ -59,7 +59,7 @@ def run_decision_tree_gridsearch(data: DiabetesData):
         param_grid=param_grid,
         cv=cv,
         scoring=scoring,
-        refit='f1',
+        refit=refit,
         n_jobs=-1
     )
 
@@ -79,4 +79,5 @@ def run_decision_tree_gridsearch(data: DiabetesData):
 if __name__ == '__main__':
     data: DiabetesData = clean_df_null(get_raw_data())
     # run_decision_tree_gridsearch(data)
+    # run_decision_tree_gridsearch(data, "recall")
     run_decision_tree(data)

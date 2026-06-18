@@ -64,7 +64,37 @@ def setup_rules(method: str):
         ctrl.Rule(bmi['obese'] & pedigree['high'], diabetes['high'])
     ]
 
-    diabetes_ctrl = ctrl.ControlSystem(rules)
+    rules_recall = [
+        ctrl.Rule(glucose['low'], diabetes['low']),
+
+        ctrl.Rule(glucose['medium'] & bmi['normal'] & pedigree['low'], diabetes['low']),
+        ctrl.Rule(glucose['medium'] & bmi['underweight'], diabetes['low']),
+
+        ctrl.Rule(glucose['medium'] & bmi['overweight'], diabetes['medium']),
+        ctrl.Rule(age['adult'] & pedigree['medium'] & bmi['normal'], diabetes['medium']),
+        ctrl.Rule(glucose['medium'] & bmi['obese'], diabetes['high']),
+        ctrl.Rule(glucose['high'] & bmi['underweight'], diabetes['high']),
+        ctrl.Rule(glucose['high'] & bmi['normal'], diabetes['high']),
+        ctrl.Rule(glucose['alarming'] & age['young'], diabetes['high']),
+        ctrl.Rule(age['adult'] & bmi['obese'] & pedigree['medium'], diabetes['high']),
+
+        ctrl.Rule(glucose['high'] & bmi['overweight'], diabetes['high']),
+        ctrl.Rule(glucose['alarming'], diabetes['high']),
+        ctrl.Rule(age['adult'] & pedigree['high'], diabetes['high']),
+        ctrl.Rule(bmi['obese'] & pedigree['high'], diabetes['high']),
+        ctrl.Rule(bmi['obese'] & age['elderly'] & glucose['medium'], diabetes['high']),
+        ctrl.Rule(age['adult'] & pedigree['medium'] & glucose['high'], diabetes['high']),
+
+        ctrl.Rule(glucose['high'] & bmi['obese'], diabetes['certain']),
+        ctrl.Rule(glucose['high'] & age['elderly'] & bmi['obese'], diabetes['certain']),
+        ctrl.Rule(glucose['alarming'] & bmi['obese'], diabetes['certain']),
+        ctrl.Rule(glucose['alarming'] & bmi['overweight'] & age['elderly'], diabetes['certain']),
+        ctrl.Rule(glucose['medium'] & bmi['normal'] & pedigree['medium'], diabetes['medium']),
+        ctrl.Rule(glucose['medium'] & bmi['normal'] & pedigree['high'], diabetes['medium']),
+    ]
+
+    # swap with rules_recall to maximalize recall - much more liberal rules
+    diabetes_ctrl = ctrl.ControlSystem(rules_recall)
     return ctrl.ControlSystemSimulation(diabetes_ctrl)
 
 

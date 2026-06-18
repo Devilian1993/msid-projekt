@@ -32,7 +32,7 @@ def run_logistic_regression(data: DiabetesData):
     print("Logistic Regression")
     print_metrics(scores)
 
-def run_logistic_regression_gridsearch(data: DiabetesData):
+def run_logistic_regression_gridsearch(data: DiabetesData, refit: str = 'f1'):
     base_model = Pipeline([
         ('scaler', StandardScaler()),
         ('model', LogisticRegression(
@@ -62,7 +62,7 @@ def run_logistic_regression_gridsearch(data: DiabetesData):
         param_grid=param_grid,
         cv=cv,
         scoring=scoring,
-        refit='f1',
+        refit=refit,
         n_jobs=-1
     )
 
@@ -83,4 +83,5 @@ def run_logistic_regression_gridsearch(data: DiabetesData):
 if __name__ == '__main__':
     data = clean_df_null(get_raw_data())
     # run_logistic_regression_gridsearch(data)
+    # run_logistic_regression_gridsearch(data, 'recall')
     run_logistic_regression(data)
