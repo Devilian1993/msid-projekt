@@ -7,7 +7,7 @@ import random_forest
 from data_prep import DiabetesData, get_raw_data, clean_df_null, clean_df_median, split_data
 
 df_raw = get_raw_data()
-METHOD = 'lom'
+METHOD = 'centroid'
 
 # 3 datasets - raw data (some missing values), clean data (no missing values), median data (missing filled with median)
 nulls_data = split_data(df_raw.copy())
